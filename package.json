@@ -2,6 +2,10 @@
   "name": "nbt-editor",
   "version": "1.0.0",
   "description": "NBT Editor - A web-based NBT file editor with Electron support",
+  "author": {
+    "name": "playfairs",
+    "email": "root@playfairs.cc"
+  },
   "main": "main.js",
   "homepage": "./",
   "scripts": {
