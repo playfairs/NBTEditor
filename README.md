@@ -18,3 +18,5 @@ Check out the [live-demo](http://irath96.github.io/webNBT/).
 # NBTEditor
 
 A fork of **webNBT** embedded in an [Electron](https://www.electronjs.org/) for offline convenience.
+
+Currently only Embeds the webNBT in an Electron App, more changes will come soon. As I am currently typing this, I am tired, I will probably work on it more in the morning.
