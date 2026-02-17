@@ -118,23 +118,62 @@ var App = (function() {
     if(tryMode(data, DATAMODE_UNCOMPRESSED, false)) return;
     
     if(confirm("Could not parse your file.\nIf you are sure this is a NBT-file you should report a bug.\n\nClick OK to contact the developer."))
-      location.href = "http://irath96.github.io/contact/";
+      location.href = "https://playfairs.cc/socials";
   };
   
   function nodeEditValue(node, isNew) {
     var tag = TagLibrary.tagHash[node.data.tagId];
     
     if(tag.isEditable()) {
-      var value = prompt("New value?", tag.getJSValue());
-      if((value === null || value === '') && !isNew) return;
-      
-      if(tag.usesNumericValues()) value = Number(value);
-      tag.setJSValue(value);
-      
-      App.updateHexview();
+      showEditModal("New value?", tag.getJSValue(), function(value) {
+        if((value === null || value === '') && !isNew) return;
+        
+        if(tag.usesNumericValues()) value = Number(value);
+        tag.setJSValue(value);
+        
+        App.updateHexview();
+        App.treeRef.set_text(node, tag.toString(node.data.key));
+      });
+    } else {
+      App.treeRef.set_text(node, tag.toString(node.data.key));
+    }
+  }
+  
+  function showEditModal(title, defaultValue, callback) {
+    var modal = document.getElementById('edit_modal');
+    var overlay = document.getElementById('modal_overlay');
+    var input = document.getElementById('modal_input');
+    var okBtn = document.getElementById('modal_ok');
+    var cancelBtn = document.getElementById('modal_cancel');
+    
+    document.getElementById('modal_title').textContent = title;
+    input.value = defaultValue;
+    
+    function closeModal() {
+      modal.style.display = 'none';
+      overlay.style.display = 'none';
+      okBtn.onclick = null;
+      cancelBtn.onclick = null;
+      input.onkeydown = null;
     }
     
-    App.treeRef.set_text(node, tag.toString(node.data.key));
+    function handleOK() {
+      var value = input.value;
+      closeModal();
+      callback(value);
+    }
+    
+    okBtn.onclick = handleOK;
+    cancelBtn.onclick = closeModal;
+    input.onkeydown = function(e) {
+      if(e.key === 'Enter') handleOK();
+      else if(e.key === 'Escape') closeModal();
+    };
+    
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+    input.focus();
+    input.select();
   }
   
   function actionsForNode(node) {
